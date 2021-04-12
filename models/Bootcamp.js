@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const gjv = require("geojson-validation");
+//const gjv = require("geojson-validation");
+const slugify = require('slugify');
 
 const BootcampSchema = new mongoose.Schema({
   name: {
@@ -13,7 +14,7 @@ const BootcampSchema = new mongoose.Schema({
 
   description: {
     type:String,
-    required: [true, 'Please add a name'],
+    required: [true, 'Please add a description'],
     maxlength: [500, 'The description is more than 500 characters']
   },
   website: {
@@ -101,5 +102,13 @@ const BootcampSchema = new mongoose.Schema({
   }
 
 });
+
+// Create bootcamp slug
+
+BootcampSchema.pre('save', function(next){
+  //console.log('Slugify ran', this.name);
+  this.slug = slugify(this.name, {lower: true});
+  next();
+})
 
 module.exports = mongoose.model('Bootcamp', BootcampSchema);
